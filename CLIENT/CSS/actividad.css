@@ -57,10 +57,255 @@ main {
 
 #nombreProyectoNav {
     font-size: 16px;
-    margin-left: 10px;
+    margin-left: 8px;
     display: inline-block;
     max-width: 200px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+#nombreActividadNav {
+    font-size: 16px;
+    margin-left: 16px;
+    display: inline-block;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.actividades {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.actividades .actividadNombre #nombreActividad {
+    color: #BDE6FB;
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.actividades .btngroup {
+    position: absolute;
+    top: 10px;
+    right: 30px;
+}
+
+.actividades .btngroup #editarActividadButton,
+.actividades .btngroup #eliminarActividadButton {
+    background-color: transparent;
+    color: #BDE6FB;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.container {
+    display: grid;
+    gap: 1.6em;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.container > .tablasActividad {
+    grid-column: span 2;
+}
+
+.container > .detallesActividad {
+    grid-column: span 1;
+}
+
+.container .detallesActividad .detallesA {
+    border-bottom: 1px solid #171D20;
+}
+
+.container .detallesActividad .detallesA h4 {
+    font-size: 17px;
+    margin-bottom: 3px;
+    color: #BDE6FB;
+}
+
+.container .detallesActividad .detallesA p {
+    color: #BDE6FB;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.container .detallesActividad .detallesAF {
+    display: grid;
+    gap: 1.6em;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.container .detallesActividad .detallesAF h5 {
+    font-size: 14px;
+    color: #BDE6FB;
+    margin-bottom: 3px;
+}
+
+.container .detallesActividad .detallesAF p {
+    font-size: 12px;
+    color: #BDE6FB;
+    margin-bottom: 2px;
+}
+
+.container .detallesActividad .detallesAF .ini,
+.container .detallesActividad .detallesAF .fin {
+    border-bottom: 1px solid #171D20;
+}
+
+.content-editar-actividad {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    padding: 20px 30px;
+    background-color: #1E2529;
+    border-radius: 10px;
+    box-shadow: 0 0 20px 0 rgb(4, 255, 230, .3);
+}
+
+.content-editar-actividad #cerrarEdicionA {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 15px;
+    height: 15px;
+    color: #BDE6FB;
+}
+
+.content-editar-actividad .form-editar-actividad h2 {
+    font-family: 'Courier New', Courier, monospace;
+    color: #BDE6FB;
+    text-align: center;
+}
+
+.content-editar-actividad .form-editar-actividad label {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: #BDE6FB;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.content-editar-actividad .form-editar-actividad input,
+.content-editar-actividad .form-editar-actividad textarea {
+    width: 100%;
+    padding: .5em;
+    border: none;
+    outline: none;
+    caret-color: #BDE6FB;
+    color: #BDE6FB;
+    border-bottom: 1px solid #BDE6FB;
+    background-color: #1E2529;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.content-editar-actividad .form-editar-actividad #editarActividadBtn {
+    background-color: #BDE6FB;
+    width: 100%;
+    color: #1E2529;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+.content-editar-actividad .form-editar-actividad #editarActividadBtn:hover {
+    background-color: #ccecfc;
+}
+
+.content-editar-actividad .form-editar-actividad form p {
+    margin: 0;
+    padding: 1em;
+}
+
+.content-editar-actividad .form-editar-actividad .fechasActividad {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.content-eliminar-actividad {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    padding: 20px 30px;
+    background-color: #1E2529;
+    border-radius: 10px;
+    box-shadow: 0 0 20px 0 rgb(4, 255, 230, .3);
+}
+
+.content-eliminar-actividad #cerrarEliminacionA {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 15px;
+    height: 15px;
+    color: #BDE6FB;
+}
+
+.content-eliminar-actividad .elimP h2 {
+    font-family: 'Courier New', Courier, monospace;
+    color: #BDE6FB;
+    text-align: center;
+}
+
+.content-eliminar-actividad .elimP p {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: #BDE6FB;
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+}
+
+.content-eliminar-actividad .elimP .btn-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.content-eliminar-actividad .elimP .btn-group {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.content-eliminar-actividad .elimP .btn-group #eliminarActividadBtn {
+    background-color: #BDE6FB;
+    width: 75%;
+    color: #1E2529;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    margin: 0 auto;
+}
+
+.content-eliminar-actividad .elimP .btn-group #eliminarActividadBtn:hover {
+    background-color: #ccecfc;
+}
+
+.content-eliminar-actividad .elimP .btn-group #cancelarEliminacionA {
+    background-color: #171D20;
+    width: 75%;
+    color: #BDE6FB;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    margin: 0 auto;
+    border: 1px solid #171D20;
+}
+
+.content-eliminar-actividad .elimP .btn-group #cancelarEliminacionA:hover {
+    color: #ccecfc;
+    background-color: #1E2529;
+    border: 1px solid #ccecfc;
 }

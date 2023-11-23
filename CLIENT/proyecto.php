@@ -331,7 +331,7 @@
                     method: 'DELETE',
                     dataType: 'json',
                     contentType: 'application/json',
-                    data: JSON.stringify({ Proyecto_ID: idProyecto}),
+                    data: JSON.stringify({ Proyecto_ID: idProyecto }),
                     success: function(respuesta) {
                         console.log(respuesta);
 

@@ -76,26 +76,23 @@
             }
         }
 
-        public function ConsultarActividad($proyecto, $nombre)
+        public function ConsultarActividad($id)
         {
             try
             {
                 $sql = "SELECT
-                    a.Actividad_ID,
-                    a.Actividad_Nombre,
-                    a.Actividad_Descripcion,
-                    a.Actividad_Objetivo,
-                    a.Actividad_FechaInicial,
-                    a.Actividad_FechaFinal,
-                    p.Proyecto_Nombre AS Actividad_Proyecto
-                FROM Actividades a
-                JOIN Proyectos p ON a.Actividad_Proyecto = p.Proyecto_ID
-                WHERE p.Proyecto_ID = :proyecto AND a.Actividad_Nombre = :nombre";
+                    Actividad_ID,
+                    Actividad_Nombre,
+                    Actividad_Descripcion,
+                    Actividad_Objetivo,
+                    Actividad_FechaInicial,
+                    Actividad_FechaFinal
+                FROM Actividades
+                WHERE Actividad_ID = :id";
 
                 $consulta = $this -> con -> prepare($sql);
 
-                $consulta -> bindParam(':proyecto', $proyecto, PDO::PARAM_INT);
-                $consulta -> bindParam(':nombre', $nombre, PDO::PARAM_STR);
+                $consulta -> bindParam(':id', $id, PDO::PARAM_INT);
                 $consulta -> execute();
 
                 $actividad = $consulta -> fetch(PDO::FETCH_ASSOC);
@@ -234,9 +231,8 @@
         }
         else if($_GET['action'] === 'consultar_actividad')
         {
-            $proyectoID = $_GET['proyecto_id'];
-            $actividadNombre = $_GET['nombre_actividad'];
-            $actividadesAPI -> ConsultarActividad($proyectoID, $actividadNombre);
+            $idActividad = $_GET['id'];
+            $actividadesAPI -> ConsultarActividad($idActividad);
         }
     }
 ?>
