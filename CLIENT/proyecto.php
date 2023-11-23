@@ -126,6 +126,42 @@
             </div>
         </div>
     </div>
+
+    <div id="nuevaActividad" style="display: none;">
+        <div class="content-crear-actividad">
+            <div><a href="#" id="cerrarActividad"><i class="fa-solid fa-xmark"></i></a></div>
+            <div class="form-nueva-actividad">
+                <h2>Nueva Actividad</h2>
+                <form action="">
+                    <p>
+                        <label for="nombreActividad">Nombre: </label>
+                        <input type="text" id="nombreActividad" name="nombreActividad" autocomplete="off" required>
+                    </p>
+                    <p>
+                        <label for="descripcionActividad">Descripción: </label>
+                        <textarea type="text" id="descripcionActividad" autocomplete="off" required></textarea>
+                    </p>
+                    <p>
+                        <label for="objetivo">Objetivo: </label>
+                        <textarea name="objetivoActividad" id="objetivoActividad" autocomplete="off" required></textarea>
+                    </p>
+                    <div class="fechasActividad">
+                        <p>
+                            <label for="fechaInicialActividad">Inicio: </label>
+                            <input type="text" name="fechaInicioActividad" id="fechaInicioActividad" autocomplete="off" required>
+                        </p>
+                        <p>
+                            <label for="fechaFinalActividad">Finalización: </label>
+                            <input type="text" name="fechaFinalActividad" id="fechaFinalActividad" autocomplete="off">
+                        </p>
+                    </div>
+                    <p>
+                        <button id="crearActividadBtn" type="submit">Agregar Actividad</button>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js" integrity="sha512-uKQ39gEGiyUJl4AI6L+ekBdGKpGw4xJ55+xyJG7YFlJokPNYegn9KwQ3P8A7aFQAUtUsAQHep+d/lrGqrbPIDQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -192,12 +228,29 @@
                     const descripcion = $('<p>').addClass('card-text').text(actividad.Actividad_Descripcion);
 
                     card.click(function() {
-                        window.location.href = 'actividad.php?id=' + actividad.Actividad_ID;
+                        const proyectoID = ObtenerIDProyecto();
+                        const proyectoNombre = ObtenerNombreProyecto();
+
+                        window.location.href = `actividad.php?id=${actividad.Actividad_ID}&proyectoID=${proyectoID}&proyectoNombre=${proyectoNombre}`;
                     });
 
                     card.append(nombre, descripcion);
                     actividadesContainer.append(card);
                 });
+            }
+
+            function ObtenerIDProyecto() {
+                const urlParam = new URLSearchParams(window.location.search);
+                const idProyecto = urlParam.get('id');
+
+                return idProyecto;
+            }
+
+            function ObtenerNombreProyecto() {
+                var nombreProyectoElemento = document.getElementById('nombreProyecto');
+                var nombreProyecto = nombreProyectoElemento.textContent || nombreProyectoElemento.innerText;
+
+                return nombreProyecto;
             }
 
             function BuscarActividad(actividades) {
@@ -215,8 +268,6 @@
 
                 MostrarActividades(actividades);
             }
-
-            
 
             function EditarProyecto(idProyecto, nombre, descripcion, objetivo, fechaInicio, fechaFinal, responsable, presupuesto) {
                 const datosProyecto = {
@@ -309,6 +360,73 @@
                 });
             }
 
+            function CrearActividad(nombre, descripcion, objetivo, fechaInicio, fechaFinal, idProyecto) {
+                $.ajax({
+                    url: 'https://localhost/ServiciosWeb/EcoPro/API/actividades.php?action=crear_actividad',
+                    method: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify( {
+                        Actividad_Nombre: nombre,
+                        Actividad_Descripcion: descripcion,
+                        Actividad_Objetivo: objetivo,
+                        Actividad_FechaInicial: fechaInicio,
+                        Actividad_FechaFinal: fechaFinal,
+                        Actividad_Proyecto: idProyecto
+                    }),
+                    success: function(respuesta) {
+                        console.log(respuesta);
+
+                        Swal.fire({
+                            icon: "success",
+                            title: "Actividad agregada.",
+                            showConfirmButton: false,
+                            timer: 2000,
+                            customClass: {
+                                container: 'my-swal-container',
+                                title: 'my-swal-title',
+                                popup: 'my-swal-popup',
+                                icon: 'my-swal-icon',
+                            },
+                            background: '#1E2529',
+                            iconColor: '#BDE6FB'
+                        });
+
+                        const modalActNew = document.getElementById('nuevaActividad');
+                        modalActNew.style.display = 'none';
+                        ObtenerActividades(idProyecto);
+                    },
+                    error: function(error) {
+                        console.error('Error al agregar el proyecto: ', error);
+                    }
+                });
+            }
+
+            function LimpiarFormNueva() {
+                $('#nombreActividad').val('');
+                $('#descripcionActividad').val('');
+                $('#objetivoActividad').val('');
+                $('#fechaInicioActividad').val('');
+                $('#fechaFinalActividad').val('');
+            }
+
+            $('#crearActividadBtn').on('click', function(e) {
+                e.preventDefault();
+
+                const urlParam = new URLSearchParams(window.location.search);
+                const idProyecto = urlParam.get('id');
+
+                const nombre = $('#nombreActividad').val();
+                const descripcion = $('#descripcionActividad').val();
+                const objetivo = $('#objetivoActividad').val();
+                const fechaInicio = $('#fechaInicioActividad').val();
+                const fechaFinal = $('#fechaFinalActividad').val();
+
+                CrearActividad(nombre, descripcion, objetivo, fechaInicio, fechaFinal, idProyecto);
+
+                LimpiarFormNueva();
+            })
+
             $("#editarProyectoBtn").on('click', function(e) {
                 e.preventDefault();
 
@@ -352,6 +470,15 @@
             $("#cerrarEliminacion").on('click', function() {
                 $("#eliminarProyecto").fadeOut("slow");
             });
+
+            $("#nueva-actividad-button").on('click', function() {
+                $("#nuevaActividad").fadeIn("slow");
+            });
+
+            $("#cerrarActividad").on('click', function() {
+                $("#nuevaActividad").fadeOut("slow");
+                LimpiarFormNueva();
+            })
 
             const urlParams = new URLSearchParams(window.location.search);
             const proyectoID = urlParams.get('id');
