@@ -236,28 +236,11 @@
                         });
 
                         $("#editarProyecto").fadeOut("slow");
+
+                        DetallesProyecto(idProyecto);
                     },
                     error: function(error) {
                         console.error('Error al guardar los cambios: ', error);
-
-                        Swal.fire({
-                            icon: "success",
-                            title: "Se han guardado los cambios.",
-                            showConfirmButton: false,
-                            timer: 2000,
-                            customClass: {
-                                container: 'my-swal-container',
-                                title: 'my-swal-title',
-                                popup: 'my-swal-popup',
-                                icon: 'my-swal-icon',
-                            },
-                            background: '#1E2529',
-                            iconColor: '#BDE6FB'
-                        });
-
-                        $("#editarProyecto").fadeOut("slow");
-
-                        DetallesProyecto(idProyecto);
                     }
                 });
             }
@@ -270,6 +253,41 @@
                 $('#presupuestoProyectoE').val(proyecto.Proyecto_Presupuesto);
                 $('#fechaInicioProyectoE').val(proyecto.Proyecto_FechaInicial);
                 $('#fechaFinalProyectoE').val(proyecto.Proyecto_FechaFinal);
+            }
+
+            function EliminarProyecto(idProyecto) {
+                $.ajax({
+                    url: 'https://localhost/ServiciosWeb/EcoPro/API/proyectos.php?action=eliminar_proyecto',
+                    method: 'DELETE',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ Proyecto_ID: idProyecto}),
+                    success: function(respuesta) {
+                        console.log(respuesta);
+
+                        Swal.fire({
+                            icon: "success",
+                            title: "Se ha eliminado el proyecto.",
+                            showConfirmButton: false,
+                            timer: 2000,
+                            customClass: {
+                                container: 'my-swal-container',
+                                title: 'my-swal-title',
+                                popup: 'my-swal-popup',
+                                icon: 'my-swal-icon',
+                            },
+                            background: '#1E2529',
+                            iconColor: '#BDE6FB'
+                        });
+
+                        $("#eliminarProyecto").fadeOut("slow", function() {
+                            window.location.href = 'index.php';
+                        })
+                    },
+                    error: function (error) {
+                        console.error('Error al eliminar el proyecto: ', error);
+                    }
+                });
             }
 
             $("#editarProyectoBtn").on('click', function(e) {
@@ -288,6 +306,17 @@
 
                 EditarProyecto(idProyecto, nombre, descripcion, objetivo, fechaInicio, fechaFinal, responsable, presupuesto);
             });
+
+            $("#eliminarProyectoBtn").on('click', function() {
+                const urlParametro = new URLSearchParams(window.location.search);
+                const idproyecto = urlParametro.get('id');
+
+                EliminarProyecto(idproyecto);
+            });
+
+            $("#cancelarEliminacion").on('click', function() {
+                $("#eliminarProyecto").fadeOut("slow");
+            })
 
             $("#editarProyectoButton").on('click', function() {
                 $("#editarProyecto").fadeIn("slow");
