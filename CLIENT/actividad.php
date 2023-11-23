@@ -28,7 +28,30 @@
         </header>
 
         <div class="container">
-            <div class="tablasActividad"></div>
+            <div class="tablasActividad">
+                <div class="container-participantes">
+                    <h2><i class="fa-solid fa-user"></i> Participantes</h2>
+                    <div class="container-buscar-participante">
+                        <div class="buscar-nuevo-participante">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="buscar-input-participante" placeholder="Buscar participante...">
+                        </div>
+                        <button id="nuevo-participante-button"><i class="fa-solid fa-plus"></i> Agregar Participante</button>
+                    </div>
+                    <table id="tabla-participantes">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Rol</th>
+                                <th>N° Telefónico</th>
+                                <th>Correo</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="participantes-tabla"></tbody>
+                    </table>
+                </div>
+            </div>
             <div class="detallesActividad">
                 <article class="detallesA">
                     <h4>Descripción de la actividad:</h4>
@@ -98,6 +121,94 @@
                     <div class="btn-group">
                         <button id="cancelarEliminacionA">Cancelar</button>
                         <button id="eliminarActividadBtn"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="crearParticipante" style="display: none;">
+        <div class="content-nuevo-participante">
+            <div><a href="#" id="cerrarNuevoP"><i class="fa-solid fa-xmark"></i></a></div>
+            <div class="form-nuevo-participante">
+                <h2>Nuevo Participante</h2>
+                <form action="">
+                    <div class="datosParticipanteNuevo">
+                        <div class="nomrol">
+                            <p>
+                                <label for="nombreParticipante">Nombre: </label>
+                                <input type="text" id="nombreParticipante" autocomplete="off" required>
+                            </p>
+                            <p>
+                                <label for="rolParticipante">Rol: </label>
+                                <input type="text" id="rolParticipante" autocomplete="off" required>
+                            </p>
+                        </div>
+                        <div class="contacto">
+                            <p>
+                                <label for="celularParticipante">N° Telefónico: </label>
+                                <input type="text" id="celularParticipante" autocomplete="off" required>
+                            </p>
+                            <p>
+                                <label for="correoParticipante">Correo: </label>
+                                <input type="text" id="correoParticipante" autocomplete="off" required>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="crearP">
+                        <button id="crearParticipanteBtn" type="submit">Agregar participante</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="editarParticipante" style="display: none;">
+        <div class="content-editar-participante">
+            <div><a href="#" id="cerrarEditarP"><i class="fa-solid fa-xmark"></i></a></div>
+            <div class="form-editar-participante">
+                <h2>Editar Participante</h2>
+                <form action="">
+                    <div class="datosParticipanteNuevo">
+                        <div class="nomrol">
+                            <p>
+                                <label for="nombreParticipante">Nombre: </label>
+                                <input type="text" id="nombreParticipanteE" autocomplete="off" required>
+                            </p>
+                            <p>
+                                <label for="rolParticipante">Rol: </label>
+                                <input type="text" id="rolParticipanteE" autocomplete="off" required>
+                            </p>
+                        </div>
+                        <div class="contacto">
+                            <p>
+                                <label for="celularParticipante">N° Telefónico: </label>
+                                <input type="text" id="celularParticipanteE" autocomplete="off" required>
+                            </p>
+                            <p>
+                                <label for="correoParticipante">Correo: </label>
+                                <input type="text" id="correoParticipanteE" autocomplete="off" required>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="crearP">
+                        <button id="editarParticipanteBtn" type="button"><i class="fa-solid fa-floppy-disk"></i> Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="eliminarParticipante" style="display: none;">
+        <div class="content-eliminar-participante">
+            <div><a href="#" id="cerrarEliminacionP"><i class="fa-solid fa-xmark"></i></a></div>
+            <div class="elimP">
+                <h2>Eliminar Proyecto</h2>
+                <div class="elimnacionA">
+                    <p>¿Está seguro que desea eliminar el participante?</p>
+                    <div class="btn-group">
+                        <button id="cancelarEliminacionP">Cancelar</button>
+                        <button id="eliminarParticipanteBtn"><i class="fa-solid fa-trash"></i> Eliminar</button>
                     </div>
                 </div>
             </div>
@@ -244,6 +355,60 @@
                 enlaceProyecto.find('span').text(nombreProyecto);
             }
 
+            function ObtenerParticipantes(idActividad) {
+                $.ajax({
+                    url: `https://localhost/ServiciosWeb/EcoPro/API/participantes.php?action=obtener_participantes&actividad_id=${idActividad}`,
+                    method: 'GET', 
+                    dataType: 'json',
+                    success: function(participantes) {
+                        MostrarParticipantes(participantes);
+                    },
+                    error: function(error) {
+                        console.error('Error al obtener los participantes: ', error);
+                    }
+                });
+            }
+
+            function MostrarParticipantes(participantes) {
+                const participantesTabla = $('#participantes-tabla');
+                participantesTabla.empty();
+
+                participantes.forEach(participante => {
+                    const fila = $('<tr>');
+                    const nombre = $('<td>').text(participante.Participante_Nombre);
+                    const rol = $('<td>').text(participante.Participante_Rol);
+                    const celular = $('<td>').text(participante.Participante_Celular);
+                    const correo = $('<td>').text(participante.Participante_Correo);
+
+                    fila.append(nombre, rol, celular, correo);
+
+                    const editarBtn = $('<button>').html('<i class="fas fa-edit"></i>');
+                    editarBtn.addClass('icon-btn');
+                    editarBtn.on('click', function() {
+                        MostrarModalEdicion(participante.Participante_ID);
+                    });
+
+                    const eliminarBtn = $('<button>').html('<i class="fas fa-trash"></i>');
+                    eliminarBtn.addClass('icon-btn');
+                    eliminarBtn.on('click', function() {
+                        MostrarModalEliminacion(participante.Participante_ID);
+                    });
+
+                    const accion = $('<td>').append(editarBtn, eliminarBtn);
+
+                    fila.append(accion);
+                    participantesTabla.append(fila);
+                })
+            }
+
+            function MostrarModalEdicion(idParticipante) {
+                $("#editarParticipante").fadeIn("slow");
+            }
+
+            function MostrarModalEliminacion(idParticipante) {
+                $("#eliminarParticipante").fadeIn("slow");
+            }
+
             $("#eliminarActividadBtn").on('click', function() {
                 const urlParametro = new URLSearchParams(window.location.search);
                 const idactividad = urlParametro.get('id');
@@ -286,12 +451,29 @@
                 $("#eliminarActividad").fadeOut("slow");
             });
 
+            $("#cerrarEditarP").on('click', function() {
+                $("#editarParticipante").fadeOut("slow");
+            });
+
+            $("#cerrarEliminacionP").on('click', function() {
+                $("#eliminarParticipante").fadeOut("slow");
+            });
+
+            $("#nuevo-participante-button").on('click', function() {
+                $("#crearParticipante").fadeIn("slow");
+            });
+
+            $("#cerrarNuevoP").on('click', function() {
+                $("#crearParticipante").fadeOut("slow");
+            });
+
             ActualizarProyectoNav();
 
             const urlParams = new URLSearchParams(window.location.search);
             const actividadID = urlParams.get('id');
 
             DetallesActividad(actividadID);
+            ObtenerParticipantes(actividadID);
         });
     </script>
 </body>
