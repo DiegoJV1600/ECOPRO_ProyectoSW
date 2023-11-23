@@ -174,6 +174,7 @@
                     dataType: 'json',
                     success: function(actividades) {
                         MostrarActividades(actividades);
+                        BuscarActividad(actividades);
                     },
                     error: function(error) {
                         console.error('Error al obtener las actividades: ', error);
@@ -198,6 +199,24 @@
                     actividadesContainer.append(card);
                 });
             }
+
+            function BuscarActividad(actividades) {
+                const actividadesContainer = $('#actividades-container');
+
+                $('#buscar-input').on('input', function() {
+                    const filtro = $(this).val().toLowerCase();
+
+                    const actividadesFiltradas = actividades.filter(actividad => {
+                        return actividad.Actividad_Nombre.toLowerCase().startsWith(filtro);
+                    });
+
+                    MostrarActividades(actividadesFiltradas);
+                });
+
+                MostrarActividades(actividades);
+            }
+
+            
 
             function EditarProyecto(idProyecto, nombre, descripcion, objetivo, fechaInicio, fechaFinal, responsable, presupuesto) {
                 const datosProyecto = {
@@ -338,6 +357,7 @@
             const proyectoID = urlParams.get('id');
 
             DetallesProyecto(proyectoID);
+            ObtenerActividades(proyectoID);
         });
     </script>
 </body>

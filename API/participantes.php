@@ -11,7 +11,7 @@
             $this -> con = $conexion -> conectar();
         }
 
-        public function CrearParticipante($nombre, $rol, $celular, $correo, $actividad, $proyecto)
+        public function CrearParticipante($nombre, $rol, $celular, $correo, $actividad)
         {
             try
             {
@@ -20,9 +20,8 @@
                     Participante_Rol,
                     Participante_Celular,
                     Participante_Correo,
-                    Participante_Actividad,
-                    Participante_Proyecto)
-                VALUES(:nombre, :rol, :celular, :correo, :actividad, :proyecto)";
+                    Participante_Actividad)
+                VALUES(:nombre, :rol, :celular, :correo, :actividad)";
 
                 $consulta = $this -> con -> prepare($sql);
 
@@ -31,7 +30,6 @@
                 $consulta -> bindParam(':celular', $celular, PDO::PARAM_STR);
                 $consulta -> bindParam(':correo', $correo, PDO::PARAM_STR);
                 $consulta -> bindParam(':actividad', $actividad, PDO::PARAM_INT);
-                $consulta -> bindParam(':proyecto', $proyecto, PDO::PARAM_INT);
                 $consulta -> execute();
 
                 $respuesta = array('success' => true, 'message' => 'Participante agregado con éxito.');
@@ -44,71 +42,7 @@
             }
         }
 
-        public function ObtenerParticipantesProyecto($proyecto)
-        {
-            try
-            {
-                $sql = "SELECT
-                    pa.Participante_ID,
-                    pa.Participante_Nombre,
-                    pa.Participante_Rol,
-                    pa.Participante_Celular,
-                    pa.Participante_Correo,
-                    a.Actividad_Nombre AS Participante_Actividad
-                FROM Participantes pa
-                LEFT JOIN Actividades a ON pa.Participante_Actividad = Actividad_ID
-                LEFT JOIN Proyectos p ON pa.Participante_Proyecto = Proyecto_ID
-                WHERE p.Proyecto_ID = :proyecto
-                ORDER BY pa.Participante_Modificacion DESC";
-
-                $consulta = $this -> con -> prepare($sql);
-
-                $consulta -> bindParam(':proyecto', $proyecto, PDO::PARAM_INT);
-                $consulta -> execute();
-
-                $participantes = $consulta -> fetchAll(PDO::FETCH_ASSOC);
-                echo json_encode($participantes);
-            }
-            catch(PDOException $e)
-            {
-                $respuesta = array('success' => false, 'message' => 'Error al obtener participantes: ' . $e -> getMessage());
-                echo json_encode($respuesta);
-            }
-        }
-
-        public function ConsultarParticipanteProyecto($proyecto, $nombre)
-        {
-            try
-            {
-                $sql = "SELECT
-                    pa.Participante_ID,
-                    pa.Participante_Nombre,
-                    pa.Participante_Rol,
-                    pa.Participante_Celular,
-                    pa.Participante_Correo,
-                    a.Actividad_Nombre AS Participante_Actividad
-                FROM Participantes pa
-                JOIN Actividades a ON pa.Participante_Actividad = Actividad_ID
-                JOIN Proyectos p ON pa.Participante_Proyecto = Proyecto_ID
-                WHERE p.Proyecto_ID = :proyecto AND pa.Participante_Nombre = :nombre";
-
-                $consulta = $this -> con -> prepare($sql);
-
-                $consulta -> bindParam(':proyecto', $proyecto, PDO::PARAM_INT);
-                $consulta -> bindParam(':nombre', $nombre, PDO::PARAM_STR);
-                $consulta -> execute();
-
-                $participante = $consulta -> fetch(PDO::FETCH_ASSOC);
-                echo json_encode($participante);
-            }
-            catch(PDOException $e)
-            {
-                $respuesta = array('success' => false, 'message' => 'Error al buscar el participante: ' . $e -> getMessage());
-                echo json_encode($respuesta);
-            }
-        }
-
-        public function ObtenerParticipantesActividad($actividad)
+        public function ObtenerParticipantes($actividad)
         {
             try
             {
@@ -248,8 +182,7 @@
                 $datos['Participante_Rol'],
                 $datos['Participante_Celular'],
                 $datos['Participante_Correo'],
-                $datos['Participante_Actividad'],
-                $datos['Participante_Proyecto']
+                $datos['Participante_Actividad']
             );
         }
     }
@@ -281,23 +214,12 @@
     }
     else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']))
     {
-        if($_GET['action'] === 'obtener_participantes_proyecto')
-        {
-            $proyectoID = $_GET['proyecto_id'];
-            $participantesAPI -> ObtenerParticipantesProyecto($proyectoID);
-        }
-        else if($_GET['action'] === 'obtener_participantes_actividad')
+        if($_GET['action'] === 'obtener_participantes')
         {
             $actividadID = $_GET['actividad_id'];
-            $participantesAPI -> ObtenerParticipantesActividad($actividadID);
+            $participantesAPI -> ObtenerParticipantes($actividadID);
         }
-        else if($_GET['action'] === 'consultar_participante_proyecto')
-        {
-            $proyectoID = $_GET['proyecto_id'];
-            $participanteNombre = $_GET['nombre_participante'];
-            $participantesAPI -> ConsultarParticipanteProyecto($proyectoID, $participanteNombre);
-        }
-        else if($_GET['action'] === 'consultar_participante_actividad')
+        else if($_GET['action'] === 'consultar_participante')
         {
             $actividadID = $_GET['actividad_id'];
             $participanteNombre = $_GET['nombre_participante'];

@@ -11,7 +11,7 @@
             $this -> con = $conexion -> conectar();
         }
 
-        public function CrearRecurso($nombre, $descripcion, $cantidad, $actividad, $proyecto)
+        public function CrearRecurso($nombre, $descripcion, $cantidad, $actividad)
         {
             try
             {
@@ -19,9 +19,8 @@
                     Recurso_Nombre,
                     Recurso_Descripcion,
                     Recurso_Cantidad,
-                    Recurso_Actividad,
-                    Recurso_Proyecto)
-                VALUES(:nombre, :descripcion, :cantidad, :actividad, :proyecto)";
+                    Recurso_Actividad)
+                VALUES(:nombre, :descripcion, :cantidad, :actividad)";
 
                 $consulta = $this -> con -> prepare($sql);
 
@@ -29,7 +28,6 @@
                 $consulta -> bindParam(':descripcion', $descripcion, PDO::PARAM_STR);
                 $consulta -> bindParam(':cantidad', $cantidad, PDO::PARAM_INT);
                 $consulta -> bindParam(':actividad', $actividad, PDO::PARAM_INT);
-                $consulta -> bindParam(':proyecto', $proyecto, PDO::PARAM_INT);
                 $consulta -> execute();
 
                 $respuesta = array('success' => true, 'message' => 'Recurso agregado con éxito.');
@@ -42,69 +40,7 @@
             }
         }
 
-        public function ObtenerRecursosProyecto($proyecto)
-        {
-            try 
-            {
-                $sql = "SELECT
-                    r.Recurso_ID,
-                    r.Recurso_Nombre,
-                    r.Recurso_Descripcion,
-                    r.Recurso_Cantidad,
-                    a.Actividad_Nombre AS Recurso_Actividad
-                FROM Recursos r
-                LEFT JOIN Actividades a ON r.Recurso_Actividad = Actividad_ID
-                LEFT JOIN Proyectos p ON r.Recurso_Proyecto = Proyecto_ID
-                WHERE p.Proyecto_ID = :proyecto
-                ORDER BY r.Recurso_Modificacion DESC";
-
-                $consulta = $this -> con -> prepare($sql);
-
-                $consulta -> bindParam(':proyecto', $proyecto, PDO::PARAM_INT);
-                $consulta -> execute();
-
-                $recursos = $consulta -> fetchAll(PDO::FETCH_ASSOC);
-                echo json_encode($recursos);
-            }
-            catch(PDOException $e)
-            {
-                $respuesta = array('success' => false, 'message' => 'Error al obtener recursos: ' . $e -> getMessage());
-                echo json_encode($respuesta);
-            }
-        }
-
-        public function ConsultarRecursoProyecto($proyecto, $nombre)
-        {
-            try
-            {
-                $sql = "SELECT
-                    r.Recurso_ID,
-                    r.Recurso_Nombre,
-                    r.Recurso_Descripcion,
-                    r.Recurso_Cantidad,
-                    a.Actividad_Nombre AS Recurso_Actividad
-                FROM Recursos r
-                JOIN Actividades a ON r.Recurso_Actividad = Actividad_ID
-                JOIN Proyectos p ON r.Recurso_Proyecto = Proyecto_ID
-                WHERE p.Proyecto_ID = :proyecto AND r.Recurso_Nombre = :nombre";
-
-                $consulta = $this -> con -> prepare($sql);
-
-                $consulta -> bindParam(':proyecto', $proyecto, PDO::PARAM_INT);
-                $consulta -> bindParam(':nombre', $nombre, PDO::PARAM_STR);
-                $consulta -> execute();
-
-                $recurso = $consulta -> fetch(PDO::FETCH_ASSOC);
-                echo json_encode($recurso); 
-            }
-            catch(PDOException $e)
-            {
-                $respuesta = array('success' => false, 'message' => 'Error al buscar el recurso: ' . $e -> getMessage());
-                echo json_encode($respuesta);
-            }
-        }
-
-        public function ObtenerRecursosActividad($actividad)
+        public function ObtenerRecursos($actividad)
         {
             try
             {
@@ -239,8 +175,7 @@
                 $datos['Recurso_Nombre'],
                 $datos['Recurso_Descripcion'],
                 $datos['Recurso_Cantidad'],
-                $datos['Recurso_Actividad'],
-                $datos['Recurso_Proyecto']
+                $datos['Recurso_Actividad']
             );
         }
     }
@@ -271,21 +206,10 @@
     }
     else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']))
     {
-        if($_GET['action'] === 'obtener_recursos_proyecto')
-        {
-            $proyectoID = $_GET['proyecto_id'];
-            $recursosAPI -> ObtenerRecursosProyecto($proyectoID);
-        }
-        else if($_GET['action'] === 'obtener_recursos_actividad')
+        if($_GET['action'] === 'obtener_recursos')
         {
             $actividadID = $_GET['actividad_id'];
-            $recursosAPI -> ObtenerRecursosActividad($actividadID);
-        }
-        else if($_GET['action'] === 'consultar_recurso_proyecto')
-        {
-            $proyectoID = $_GET['proyecto_id'];
-            $recursoNombre = $_GET['nombre_recurso'];
-            $recursosAPI -> ConsultarRecursoProyecto($proyectoID, $recursoNombre);
+            $recursosAPI -> ObtenerRecursos($actividadID);
         }
         else if($_GET['action'] === 'consultar_recurso_actividad')
         {
