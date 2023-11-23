@@ -189,12 +189,12 @@
                 $consulta -> execute();
 
                 $this -> con -> commit();
-                return array('success' => true, 'message' => 'Participante modificado con éxito.');
+                echo json_encode(array('success' => true, 'message' => 'Participante modificado con éxito.'));
             }
             catch(PDOException $e)
             {
                 $this -> con -> rollBack();
-                return array('success' => false, 'message' => 'Error al modificar el participante: ' . $e -> getMessage());
+                echo json_encode(array('success' => false, 'message' => 'Error al modificar el participante: ' . $e -> getMessage()));
             }
         }
 
@@ -217,18 +217,18 @@
                 if($filas_afectadas > 0)
                 {
                     $this -> con -> commit();
-                    return array('success' => true, 'message' => 'Participante eliminado con éxito.');
+                    echo json_encode(array('success' => true, 'message' => 'Participante eliminado con éxito.'));
                 }
                 else 
                 {
                     $this -> con -> rollBack();
-                    return array('success' => false, 'message' => 'No se encontro el participante.');
+                    echo json_encode(array('success' => false, 'message' => 'No se encontro el participante.'));
                 }
             }
             catch(PDOException $e)
             {
                 $this -> con -> commit();
-                return array('success' => false, 'message' => 'Error al eliminar el participante: ' . $e -> getMessage());
+                echo json_encode(array('success' => false, 'message' => 'Error al eliminar el participante: ' . $e -> getMessage()));
             }
         }
     }

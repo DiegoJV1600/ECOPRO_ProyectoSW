@@ -133,12 +133,13 @@
                 $consulta -> execute();
 
                 $this -> con -> commit();
-                return array('success' => true, 'message' => 'Actividad modificada con éxito.');
+                
+                echo json_encode(array('success' => true, 'message' => 'Actividad modificada con éxito.'));
             }
             catch(PDOException $e)
             {
                 $this -> con -> rollBack();
-                return array('success' => false, 'message' => 'Error al modificar la actividad: ' . $e -> getMessage());
+                echo json_encode(array('success' => false, 'message' => 'Error al modificar la actividad: ' . $e -> getMessage()));
             }
         }
 
@@ -161,18 +162,18 @@
                 if($filas_afectadas > 0)
                 {
                     $this -> con -> commit();
-                    return array('success' => true, 'message' => 'Actividad eliminada con éxito.');
+                    echo json_encode(array('success' => true, 'message' => 'Actividad eliminada con éxito.'));
                 }
                 else 
                 {
                     $this -> con -> rollBack();
-                    return array('success' => false, 'message' => 'No se encontro la actividad.');
+                    echo json_encode(array('success' => false, 'message' => 'No se encontro la actividad.'));
                 }
             }
             catch(PDOException $e)
             {
                 $this -> con -> rollBack();
-                return array('success' => false, 'message' => 'Error al eliminar la actividad: ' . $e -> getMessage());
+                echo json_encode(array('success' => false, 'message' => 'Error al eliminar la actividad: ' . $e -> getMessage()));
             }
         }
     }

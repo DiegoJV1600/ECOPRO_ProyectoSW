@@ -138,8 +138,7 @@
                 $this -> con -> commit();
                 header('HTTP/1.1 200 OK');
 
-                $respuesta = array('success' => true, 'message' => 'Proyecto modificado con éxito.');
-                echo json_encode($respuesta);
+                echo json_encode(array('success' => true, 'message' => 'Proyecto modificado con éxito.'));
             }
             catch(PDOException $e)
             {
@@ -208,7 +207,6 @@
     else if($_SERVER['REQUEST_METHOD'] === 'PUT')
     {
         $datos = json_decode(file_get_contents("php://input"));
-        var_dump($datos);
 
         if(isset($_GET['action']) && $_GET['action'] === 'modificar_proyecto')
         {

@@ -181,12 +181,12 @@
                 $consulta -> execute();
 
                 $this -> con -> commit();
-                return array('success' => true, 'message' => 'Recurso modificado con éxito.');
+                echo json_encode(array('success' => true, 'message' => 'Recurso modificado con éxito.'));
             }
             catch(PDOException $e)
             {
                 $this -> con -> rollBack();
-                return array('success' => false, 'message' => 'Error al modificar el recurso: ' . $e -> getMessage());
+                echo json_encode(array('success' => false, 'message' => 'Error al modificar el recurso: ' . $e -> getMessage()));
             }
         }
 
@@ -209,18 +209,18 @@
                 if($filas_afectadas > 0)
                 {
                     $this -> con -> commit();
-                    return array('success' => true, 'message' => 'Recurso eliminado con éxito.');
+                    echo json_encode(array('success' => true, 'message' => 'Recurso eliminado con éxito.'));
                 }
                 else 
                 {
                     $this -> con -> rollBack();
-                    return array('success' => false, 'message' => 'No se encontro el recurso.');
+                    echo json_encode(array('success' => false, 'message' => 'No se encontro el recurso.'));
                 }
             }
             catch(PDOException $e)
             {
                 $this -> con -> rollBack();
-                return array('success' => false, 'message' => 'Error al eliminar el recurso: ' . $e -> getMessage());
+                echo json_encode(array('success' => false, 'message' => 'Error al eliminar el recurso: ' . $e -> getMessage()));
             }
         }
     }
