@@ -68,7 +68,7 @@
             }
         }
 
-        public function ConsultarInforme($actividad, $titulo)
+        public function ConsultarInforme($id)
         {
             try
             {
@@ -78,12 +78,11 @@
                     Informe_Descripcion,
                     Informe_Entrega
                 FROM Informes
-                WHERE Informe_Actividad = :actividad AND Informe_Titulo = :titulo";
+                WHERE Informe_ID = :id";
 
                 $consulta = $this -> con -> prepare($sql);
 
-                $consulta -> bindParam(':actividad', $actividad, PDO::PARAM_INT);
-                $consulta -> bindParam(':titulo', $titulo, PDO::PARAM_STR);
+                $consulta -> bindParam(':id', $id, PDO::PARAM_INT);
                 $consulta -> execute();
 
                 $informe = $consulta -> fetch(PDO::FETCH_ASSOC);
@@ -213,9 +212,8 @@
         }
         else if($_GET['action'] === 'consultar_informe')
         {
-            $actividadID = $_GET['actividad_id'];
-            $informeTitulo = $_GET['titulo_informe'];
-            $informesAPI -> ConsultarInforme($actividadID, $informeTitulo);
+            $informeID = $_GET['informe_id'];
+            $informesAPI -> ConsultarInforme($informeID);
         }
     }
 ?>

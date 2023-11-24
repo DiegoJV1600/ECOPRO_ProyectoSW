@@ -71,7 +71,7 @@
             }
         }
 
-        public function ConsultarParticipanteActividad($actividad, $nombre)
+        public function ConsultarParticipante($id)
         {
             try
             {
@@ -82,12 +82,11 @@
                     Participante_Celular,
                     Participante_Correo
                 FROM Participantes
-                WHERE Participante_Actividad = :actividad AND Participante_Nombre = :nombre";
+                WHERE Participante_ID = :id";
 
                 $consulta = $this -> con -> prepare($sql);
 
-                $consulta -> bindParam(':actividad', $actividad, PDO::PARAM_INT);
-                $consulta -> bindParam(':nombre', $nombre, PDO::PARAM_STR);
+                $consulta -> bindParam(':id', $id, PDO::PARAM_INT);
                 $consulta -> execute();
 
                 $participante = $consulta -> fetch(PDO::FETCH_ASSOC);
@@ -221,9 +220,8 @@
         }
         else if($_GET['action'] === 'consultar_participante')
         {
-            $actividadID = $_GET['actividad_id'];
-            $participanteNombre = $_GET['nombre_participante'];
-            $participantesAPI -> ConsultarParticipanteActividad($actividadID, $participanteNombre);
+            $participanteID = $_GET['participante_id'];
+            $participantesAPI -> ConsultarParticipante($participanteID);
         }
     }
 ?>

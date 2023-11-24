@@ -68,7 +68,7 @@
             }
         }
 
-        public function ConsultarRecursoActividad($actividad, $nombre)
+        public function ConsultarRecurso($id)
         {
             try
             {
@@ -78,12 +78,11 @@
                     Recurso_Descripcion,
                     Recurso_Cantidad
                 FROM Recursos 
-                WHERE Recurso_Actividad = :actividad AND Recurso_Nombre = :nombre";
+                WHERE Recurso_ID = :id";
 
                 $consulta = $this -> con -> prepare($sql);
 
-                $consulta -> bindParam(':actividad', $actividad, PDO::PARAM_INT);
-                $consulta -> bindParam(':nombre', $nombre, PDO::PARAM_STR);
+                $consulta -> bindParam(':id', $id, PDO::PARAM_INT);
                 $consulta -> execute();
 
                 $recurso = $consulta -> fetch(PDO::FETCH_ASSOC);
@@ -211,11 +210,10 @@
             $actividadID = $_GET['actividad_id'];
             $recursosAPI -> ObtenerRecursos($actividadID);
         }
-        else if($_GET['action'] === 'consultar_recurso_actividad')
+        else if($_GET['action'] === 'consultar_recurso')
         {
-            $actividadID = $_GET['actividad_id'];
-            $recursoNombre = $_GET['nombre_recurso'];
-            $recursosAPI -> ConsultarRecursoActividad($actividadID, $recursoNombre);
+            $recursoID = $_GET['recurso_id'];
+            $recursosAPI -> ConsultarRecurso($recursoID);
         }
     }
 ?>

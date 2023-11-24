@@ -362,6 +362,7 @@
                     dataType: 'json',
                     success: function(participantes) {
                         MostrarParticipantes(participantes);
+                        BuscarParticipantes(participantes);
                     },
                     error: function(error) {
                         console.error('Error al obtener los participantes: ', error);
@@ -384,15 +385,20 @@
 
                     const editarBtn = $('<button>').html('<i class="fas fa-edit"></i>');
                     editarBtn.addClass('icon-btn');
+                    editarBtn.attr('data-id-participante', participante.Participante_ID);
                     editarBtn.on('click', function() {
-                        MostrarModalEdicion(participante.Participante_ID);
+                        const idParticipante = $(this).data('id-participante');
+                        MostrarModalEdicion(participante);
                     });
 
                     const eliminarBtn = $('<button>').html('<i class="fas fa-trash"></i>');
                     eliminarBtn.addClass('icon-btn');
+                    eliminarBtn.attr('data-id-participante', participante.Participante_ID);
                     eliminarBtn.on('click', function() {
-                        MostrarModalEliminacion(participante.Participante_ID);
+                        const idParticipante = $(this).data('id-participante');
+                        MostrarModalEliminacion(idParticipante);
                     });
+
 
                     const accion = $('<td>').append(editarBtn, eliminarBtn);
 
@@ -401,12 +407,194 @@
                 })
             }
 
-            function MostrarModalEdicion(idParticipante) {
-                $("#editarParticipante").fadeIn("slow");
+            function BuscarParticipantes(participantes) {
+                const participantesTabla = $('#participantes-tabla');
+
+                $('#buscar-input-participante').on('input', function () {
+                    const filtro = $(this).val().toLowerCase();
+
+                    const participantesFiltrados = participantes.filter(participante => {
+                        return participante.Participante_Nombre.toLowerCase().includes(filtro);
+                    });
+
+                    MostrarParticipantes(participantesFiltrados);
+                });
+
+                MostrarParticipantes(participantes);
             }
+
+            function CrearParticipante(nombre, rol, celular, correo, idActividad) {
+                $.ajax({
+                    url: 'https://localhost/ServiciosWeb/EcoPro/API/participantes.php?action=crear_participante',
+                    method: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify( {
+                        Participante_Nombre: nombre,
+                        Participante_Rol: rol,
+                        Participante_Celular: celular,
+                        Participante_Correo: correo,
+                        Participante_Actividad: idActividad
+                    }),
+                    success: function(respuesta) {
+                        console.log(respuesta);
+
+                        Swal.fire({
+                            icon: "success",
+                            title: "Participante agregado.",
+                            showConfirmButton: false,
+                            timer: 2000,
+                            customClass: {
+                                container: 'my-swal-container',
+                                title: 'my-swal-title',
+                                popup: 'my-swal-popup',
+                                icon: 'my-swal-icon',
+                            },
+                            background: '#1E2529',
+                            iconColor: '#BDE6FB'
+                        });
+
+                        const modalParNew = document.getElementById('crearParticipante');
+                        modalParNew.style.display = 'none';
+                        ObtenerParticipantes(idActividad);
+                    },
+                    error: function(error) {
+                        console.error('Error al agregar el proyecto: ', error);
+                    }
+                });
+            }
+
+            function EditarParticipante(idParticipante, nombre, rol, celular, correo) {
+                const datosParticipante = {
+                    Participante_ID: idParticipante,
+                    Participante_Nombre: nombre,
+                    Participante_Rol: rol,
+                    Participante_Celular: celular,
+                    Participante_Correo: correo,
+                };
+
+                $.ajax({
+                    url: 'https://localhost/ServiciosWeb/EcoPro/API/participantes.php?action=modificar_participante',
+                    method: 'PUT',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify(datosParticipante),
+                    success: function(respuesta) {
+                        console.log(respuesta);
+
+                        Swal.fire({
+                            icon: "success",
+                            title: "Se han guardado los cambios.",
+                            showConfirmButton: false,
+                            timer: 2000,
+                            customClass: {
+                                container: 'my-swal-container',
+                                title: 'my-swal-title',
+                                popup: 'my-swal-popup',
+                                icon: 'my-swal-icon',
+                            },
+                            background: '#1E2529',
+                            iconColor: '#BDE6FB'
+                        });
+
+                        $("#editarParticipante").fadeOut("slow");
+                    },
+                    error: function(error) {
+                        console.error('Error al guardar los cambios: ', error);
+                    }
+                });
+            }
+
+            function EliminarParticipante(idParticipante) {
+                $.ajax({
+                    url: 'https://localhost/ServiciosWeb/EcoPro/API/participantes.php?action=eliminar_participante',
+                    method: 'DELETE',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ Participante_ID: idParticipante }),
+                    success: function(respuesta) {
+                        console.log(respuesta);
+
+                        Swal.fire({
+                            icon: "success",
+                            title: "Se ha eliminado el participante.",
+                            showConfirmButton: false,
+                            timer: 2000,
+                            customClass: {
+                                container: 'my-swal-container',
+                                title: 'my-swal-title',
+                                popup: 'my-swal-popup',
+                                icon: 'my-swal-icon',
+                            },
+                            background: '#1E2529',
+                            iconColor: '#BDE6FB'
+                        });
+
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const idActividad = urlParams.get('id')
+                        const idProyecto = urlParams.get('proyectoID');
+                        const nombreProyecto = urlParams.get('proyectoNombre');
+
+                        $("#eliminarParticipante").fadeOut("slow", function() {
+                            window.location.href = `actividad.php?id=${idActividad}&proyectoID=${idProyecto}&proyectoNombre=${nombreProyecto}`;
+                        })
+                    },
+                    error: function (error) {
+                        console.error('Error al eliminar el participante: ', error);
+                    }
+                });
+            }
+
+            function MostrarModalEdicion(participante) {
+                $("#editarParticipante").fadeIn("slow");
+
+                const nombreInput = $('#nombreParticipanteE');
+                const rolInput = $('#rolParticipanteE');
+                const celularInput = $('#celularParticipanteE');
+                const correoInput = $('#correoParticipanteE');
+
+                nombreInput.val(participante.Participante_Nombre);
+                rolInput.val(participante.Participante_Rol);
+                celularInput.val(participante.Participante_Celular);
+                correoInput.val(participante.Participante_Correo);
+
+                $('#editarParticipanteBtn').on('click', function() {
+                    const idParticipante = participante.Participante_ID;
+                    const nombre = nombreInput.val();
+                    const rol = rolInput.val();
+                    const celular = celularInput.val();
+                    const correo = correoInput.val();
+
+                    EditarParticipante(idParticipante, nombre, rol, celular, correo);
+                });
+            }
+
 
             function MostrarModalEliminacion(idParticipante) {
                 $("#eliminarParticipante").fadeIn("slow");
+            }
+
+            $('#crearParticipanteBtn').on('click', function(e) {
+                e.preventDefault();
+
+                const urlParam = new URLSearchParams(window.location.search);
+                const idActividad = urlParam.get('id');
+
+                const nombre = $('#nombreParticipante').val();
+                const rol = $('#rolParticipante').val();
+                const celular = $('#celularParticipante').val();
+                const correo = $('#correoParticipante').val();
+
+                CrearParticipante(nombre, rol, celular, correo, idActividad);
+
+                LimpiarFormParticipantes();
+            })
+
+            function LimpiarFormParticipantes() {
+                $('#nombreParticipante').val('');
+                $('#rolParticipante').val('');
+                $('#celularParticipante').val('');
+                $('#correoParticipante').val('');
             }
 
             $("#eliminarActividadBtn").on('click', function() {
@@ -431,9 +619,23 @@
                 EditarActividad(idActividad, nombre, descripcion, objetivo, fechaInicio, fechaFinal);
             });
 
+            function MostrarModalEliminacion(idParticipante) {
+                $("#eliminarParticipanteBtn").attr('data-id-participante', idParticipante);
+                $("#eliminarParticipante").fadeIn("slow");
+            }
+
+            $("#eliminarParticipanteBtn").on('click', function() {
+                const idParticipante = $(this).attr('data-id-participante');
+                EliminarParticipante(idParticipante);
+            });
+
+            $("#cancelarEliminacionP").on('click', function() {
+                $("#eliminarParticipante").fadeOut("slow");
+            });
+
             $("#cancelarEliminacionA").on('click', function() {
                 $("#eliminarActividad").fadeOut("slow");
-            })
+            });
 
             $("#editarActividadButton").on('click', function() {
                 $("#editarActividad").fadeIn("slow");
@@ -465,6 +667,7 @@
 
             $("#cerrarNuevoP").on('click', function() {
                 $("#crearParticipante").fadeOut("slow");
+                LimpiarFormParticipantes();
             });
 
             ActualizarProyectoNav();
