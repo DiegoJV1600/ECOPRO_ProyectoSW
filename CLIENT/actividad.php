@@ -224,7 +224,7 @@
         $(document).ready(function() {
             function DetallesActividad(idActividad) {
                 $.ajax({
-                    url: `https://localhost/ServiciosWeb/EcoPro/API/actividades.php?action=consultar_actividad&id=${idActividad}`,
+                    url: `http://localhost/ServiciosWeb/EcoPro/API/actividades.php?action=consultar_actividad&id=${idActividad}`,
                     method: 'GET',
                     dataType: 'json',
                     success: function(actividad) {
@@ -265,7 +265,7 @@
                 };
 
                 $.ajax({
-                    url: 'https://localhost/ServiciosWeb/EcoPro/API/actividades.php?action=modificar_actividad',
+                    url: 'http://localhost/ServiciosWeb/EcoPro/API/actividades.php?action=modificar_actividad',
                     method: 'PUT',
                     dataType: 'json',
                     data: JSON.stringify(datosActividad),
@@ -299,7 +299,7 @@
 
             function EliminarActividad(idActividad) {
                 $.ajax({
-                    url: 'https://localhost/ServiciosWeb/EcoPro/API/actividades.php?action=eliminar_actividad',
+                    url: 'http://localhost/ServiciosWeb/EcoPro/API/actividades.php?action=eliminar_actividad',
                     method: 'DELETE',
                     dataType: 'json',
                     contentType: 'application/json',
@@ -357,7 +357,7 @@
 
             function ObtenerParticipantes(idActividad) {
                 $.ajax({
-                    url: `https://localhost/ServiciosWeb/EcoPro/API/participantes.php?action=obtener_participantes&actividad_id=${idActividad}`,
+                    url: `http://localhost/ServiciosWeb/EcoPro/API/participantes.php?action=obtener_participantes&actividad_id=${idActividad}`,
                     method: 'GET', 
                     dataType: 'json',
                     success: function(participantes) {
@@ -369,6 +369,8 @@
                     }
                 });
             }
+
+            
 
             function MostrarParticipantes(participantes) {
                 const participantesTabla = $('#participantes-tabla');
@@ -425,7 +427,7 @@
 
             function CrearParticipante(nombre, rol, celular, correo, idActividad) {
                 $.ajax({
-                    url: 'https://localhost/ServiciosWeb/EcoPro/API/participantes.php?action=crear_participante',
+                    url: 'http://localhost/ServiciosWeb/EcoPro/API/participantes.php?action=crear_participante',
                     method: 'POST',
                     dataType: 'json',
                     contentType: 'application/json',
@@ -474,7 +476,7 @@
                 };
 
                 $.ajax({
-                    url: 'https://localhost/ServiciosWeb/EcoPro/API/participantes.php?action=modificar_participante',
+                    url: 'http://localhost/ServiciosWeb/EcoPro/API/participantes.php?action=modificar_participante',
                     method: 'PUT',
                     dataType: 'json',
                     contentType: 'application/json',
@@ -507,7 +509,7 @@
 
             function EliminarParticipante(idParticipante) {
                 $.ajax({
-                    url: 'https://localhost/ServiciosWeb/EcoPro/API/participantes.php?action=eliminar_participante',
+                    url: 'http://localhost/ServiciosWeb/EcoPro/API/participantes.php?action=eliminar_participante',
                     method: 'DELETE',
                     dataType: 'json',
                     contentType: 'application/json',

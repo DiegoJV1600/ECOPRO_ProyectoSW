@@ -1,5 +1,6 @@
 <?php
     include 'config/database.php';
+    include 'config/headers.php';
 
     class Informe
     {

@@ -76,7 +76,7 @@
         $(document).ready(function () {
             function ObtenerProyectos() {
                 $.ajax({
-                    url: 'https://localhost/ServiciosWeb/EcoPro/API/proyectos.php?action=obtener_proyectos',
+                    url: 'http://localhost/ServiciosWeb/EcoPro/API/proyectos.php?action=obtener_proyectos',
                     method: 'GET',
                     dataType: 'json',
                     success: function(proyectos) {
@@ -124,7 +124,7 @@
 
             function CrearProyecto(nombre, descripcion, objetivo, fechaInicio, fechaFinal, responsable, presupuesto) {
                 $.ajax({
-                    url: 'https://localhost/ServiciosWeb/EcoPro/API/proyectos.php?action=crear_proyecto',
+                    url: 'http://localhost/ServiciosWeb/EcoPro/API/proyectos.php?action=crear_proyecto',
                     method: 'POST',
                     dataType: 'json',
                     contentType: 'application/json',

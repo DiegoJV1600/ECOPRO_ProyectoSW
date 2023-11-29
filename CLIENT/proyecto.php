@@ -172,7 +172,7 @@
         $(document).ready(function() {
             function DetallesProyecto(idProyecto) {
                 $.ajax({
-                    url: `https://localhost/ServiciosWeb/EcoPro/API/proyectos.php?action=consultar_proyecto&id=${idProyecto}`,
+                    url: `http://localhost/ServiciosWeb/EcoPro/API/proyectos.php?action=consultar_proyecto&id=${idProyecto}`,
                     method: 'GET',
                     dataType: 'json',
                     success: function(proyecto) {
@@ -205,7 +205,7 @@
 
             function ObtenerActividades(idProyecto) {
                 $.ajax({
-                    url: `https://localhost/ServiciosWeb/EcoPro/API/actividades.php?action=obtener_actividades&proyecto_id=${idProyecto}`,
+                    url: `http://localhost/ServiciosWeb/EcoPro/API/actividades.php?action=obtener_actividades&proyecto_id=${idProyecto}`,
                     method: 'GET',
                     dataType: 'json',
                     success: function(actividades) {
@@ -282,7 +282,7 @@
                 };
 
                 $.ajax({
-                    url: 'https://localhost/ServiciosWeb/EcoPro/API/proyectos.php?action=modificar_proyecto',
+                    url: 'http://localhost/ServiciosWeb/EcoPro/API/proyectos.php?action=modificar_proyecto',
                     method: 'PUT',
                     dataType: 'json',
                     contentType: 'application/json',
@@ -327,7 +327,7 @@
 
             function EliminarProyecto(idProyecto) {
                 $.ajax({
-                    url: 'https://localhost/ServiciosWeb/EcoPro/API/proyectos.php?action=eliminar_proyecto',
+                    url: 'http://localhost/ServiciosWeb/EcoPro/API/proyectos.php?action=eliminar_proyecto',
                     method: 'DELETE',
                     dataType: 'json',
                     contentType: 'application/json',
@@ -362,7 +362,7 @@
 
             function CrearActividad(nombre, descripcion, objetivo, fechaInicio, fechaFinal, idProyecto) {
                 $.ajax({
-                    url: 'https://localhost/ServiciosWeb/EcoPro/API/actividades.php?action=crear_actividad',
+                    url: 'http://localhost/ServiciosWeb/EcoPro/API/actividades.php?action=crear_actividad',
                     method: 'POST',
                     dataType: 'json',
                     contentType: 'application/json',
